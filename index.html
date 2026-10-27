@@ -38,19 +38,26 @@
     <header class="sticky top-0 z-50 bg-[#0a1536]/90 backdrop-blur-md border-b border-blue-400/20 shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <!-- Mengganti SVG dengan Logo HMPS -->
                 <img src="logo HMPS.png" alt="Logo HMPS" class="h-10 w-10 object-contain drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">
                 <h1 class="text-xl font-bold tracking-tight text-white">DASHBOARD HMPS PAI</h1>
             </div>
-            <div class="text-sm font-medium text-blue-200 bg-blue-900/40 px-4 py-2 rounded-full border border-blue-500/30">
-                MAKRAB PAI HMPS
+            
+            <div class="relative">
+                <button onclick="toggleMenu()" class="p-2 text-blue-200 hover:text-white bg-blue-900/40 hover:bg-blue-800/60 rounded-lg border border-blue-500/30 transition-colors focus:outline-none focus:ring-1 focus:ring-blue-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                
+                <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-[#0f172a] border border-blue-500/40 rounded-xl shadow-2xl py-2 hidden z-50 transform origin-top-right transition-all duration-200 opacity-0 scale-95">
+                    <a href="index.html" class="block px-4 py-2 text-sm text-blue-200 bg-blue-900/50 font-bold hover:bg-blue-600/30 hover:text-white transition-colors">Dashboard Utama</a>
+                    <a href="rincian.html" class="block px-4 py-2 text-sm text-blue-200 hover:bg-blue-600/30 hover:text-white transition-colors">1. Rincian</a>
+                    <a href="jadwal.html" class="block px-4 py-2 text-sm text-blue-200 hover:bg-blue-600/30 hover:text-white transition-colors">2. Jadwal</a>
+                    <a href="waktumakrab.html" class="block px-4 py-2 text-sm text-blue-200 hover:bg-blue-600/30 hover:text-white transition-colors">3. Waktu Makrab</a>
+                </div>
             </div>
         </div>
     </header>
 
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full relative z-10">
-        
-        <!-- Status Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
             <div class="glass-panel rounded-2xl p-6 border-l-4 border-l-blue-500">
                 <p class="text-sm text-blue-300 font-medium mb-1">Total Transaksi</p>
@@ -73,27 +80,11 @@
                     Riwayat Transaksi
                 </h2>
                 
-                <!-- Filter & Action Buttons -->
                 <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 w-full sm:w-auto mt-4 sm:mt-0">
-                    <!-- Pencarian Nama/NIM -->
-                    <div class="relative w-full sm:w-56">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        </div>
-                        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari Nama/NIM..." class="w-full bg-[#07102a] text-blue-200 border border-blue-500/50 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-colors placeholder-blue-500/50">
-                    </div>
-                    
-                    <!-- Dropdown Filter Status -->
-                    <select id="filterStatus" onchange="filterTable()" class="w-full sm:w-auto bg-[#07102a] text-blue-200 border border-blue-500/50 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 transition-colors cursor-pointer appearance-none">
-                        <option value="Semua">Semua Status</option>
-                        <option value="Menunggu Konfirmasi">Belum di-ACC</option>
-                    </select>
-
                     <button onclick="fetchData()" class="flex-1 sm:flex-none bg-[#07102a] hover:bg-[#0f1d45] text-blue-200 border border-blue-500/50 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors flex items-center justify-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                        Refresh Data
+                        Refresh
                     </button>
-                    <!-- TOMBOL PINDAH DATA BARU -->
                     <button onclick="openMoveModal()" class="flex-1 sm:flex-none bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-400 border border-indigo-500/50 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors flex items-center justify-center group">
                         <svg class="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                         Pindah Data
@@ -109,22 +100,20 @@
                 <table class="w-full text-left border-collapse whitespace-nowrap">
                     <thead>
                         <tr class="bg-blue-900/30 text-blue-300 text-xs uppercase tracking-wider border-b border-blue-500/30">
-                            <!-- HEADER CENTANG BARU -->
                             <th class="p-4 text-center w-10">
                                 <input type="checkbox" id="selectAll" onclick="toggleSelectAll()" class="w-4 h-4 accent-blue-500 cursor-pointer">
                             </th>
                             <th class="p-4 font-semibold">Tanggal</th>
-                            <th class="p-4 font-semibold">ID / NIM</th>
+                            <th class="p-4 font-semibold">ID TRX / NIM</th>
                             <th class="p-4 font-semibold">Nama Lengkap</th>
                             <th class="p-4 font-semibold">Nominal / Metode</th>
-                            <th class="p-4 font-semibold text-center">Bukti</th>
                             <th class="p-4 font-semibold text-center">Status</th>
                             <th class="p-4 font-semibold text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody" class="text-sm divide-y divide-blue-500/10 text-blue-50">
                         <tr>
-                            <td colspan="8" class="p-8 text-center text-blue-400/50">
+                            <td colspan="7" class="p-8 text-center text-blue-400/50">
                                 <svg class="animate-spin h-8 w-8 mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                                 Sedang memuat data dari database...
                             </td>
@@ -135,7 +124,7 @@
         </div>
     </main>
 
-    <!-- MODAL PINDAH DATA BARU -->
+    <!-- MODAL PINDAH DATA -->
     <div id="moveModal" class="fixed inset-0 bg-[#020617]/80 backdrop-blur-sm z-[100] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
         <div class="bg-[#0f172a] rounded-3xl shadow-2xl p-6 sm:p-8 max-w-sm w-full mx-4 transform scale-95 transition-all duration-300 border border-indigo-500/40" id="moveModalContent">
             <div class="text-center">
@@ -143,26 +132,20 @@
                     <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                 </div>
                 <h3 class="text-xl font-bold text-white mb-2">Arsipkan Data</h3>
-                <p class="text-sm text-blue-200 font-medium leading-relaxed mb-4">Data yang dicentang akan dipindah ke sheet baru dan dihapus dari dashboard ini.</p>
-                
+                <p class="text-sm text-blue-200 font-medium leading-relaxed mb-4">Data yang dicentang akan dipindah ke sheet baru.</p>
                 <div class="text-left mb-6">
                     <label class="block text-xs font-medium text-blue-300 mb-2">Nama Akhiran Sheet</label>
                     <input type="text" id="sheetSuffix" class="w-full bg-[#07102a] text-blue-200 border border-blue-500/50 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-colors">
                 </div>
-
                 <div class="flex space-x-3">
-                    <button type="button" onclick="closeMoveModal()" class="flex-1 bg-transparent hover:bg-blue-900/40 text-blue-200 border border-blue-500/50 font-semibold rounded-xl py-3 transition-colors">
-                        Batal
-                    </button>
-                    <button type="button" id="btnConfirmMove" onclick="executeMoveData()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl py-3 transition-colors shadow-[0_0_15px_rgba(79,70,229,0.4)]">
-                        Pindahkan
-                    </button>
+                    <button type="button" onclick="closeMoveModal()" class="flex-1 bg-transparent hover:bg-blue-900/40 text-blue-200 border border-blue-500/50 font-semibold rounded-xl py-3 transition-colors">Batal</button>
+                    <button type="button" id="btnConfirmMove" onclick="executeMoveData()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl py-3 transition-colors shadow-[0_0_15px_rgba(79,70,229,0.4)]">Pindahkan</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL HAPUS SEMUA (DIPERBAIKI) -->
+    <!-- MODAL HAPUS SEMUA -->
     <div id="deleteModal" class="fixed inset-0 bg-[#020617]/80 backdrop-blur-sm z-[100] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
         <div class="bg-[#0f172a] rounded-3xl shadow-2xl p-6 sm:p-8 max-w-sm w-full mx-4 transform scale-95 transition-all duration-300 border border-orange-500/40" id="deleteModalContent">
             <div class="text-center">
@@ -170,46 +153,11 @@
                     <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                 </div>
                 <h3 class="text-xl font-bold text-white mb-2">Hapus Semua Data?</h3>
-                <p class="text-sm text-blue-200 font-medium leading-relaxed mb-6">Apakah kamu yakin ingin menghapus seluruh data di server ?, klik Ya jika ingin menghapus seluruh data.</p>
+                <p class="text-sm text-blue-200 font-medium leading-relaxed mb-6">Tindakan ini menghapus semua data utama. Data tidak dapat dikembalikan.</p>
                 <div class="flex space-x-3">
-                    <button type="button" onclick="closeDeleteModal()" class="flex-1 bg-transparent hover:bg-blue-900/40 text-blue-200 border border-blue-500/50 font-semibold rounded-xl py-3 transition-colors">
-                        Batal
-                    </button>
-                    <button type="button" id="btnConfirmDelete" onclick="executeDeleteAll()" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-xl py-3 transition-colors shadow-[0_0_15px_rgba(249,115,22,0.4)]">
-                        Ya, Hapus
-                    </button>
+                    <button type="button" onclick="closeDeleteModal()" class="flex-1 bg-transparent hover:bg-blue-900/40 text-blue-200 border border-blue-500/50 font-semibold rounded-xl py-3 transition-colors">Batal</button>
+                    <button type="button" id="btnConfirmDelete" onclick="executeDeleteAll()" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-xl py-3 transition-colors shadow-[0_0_15px_rgba(249,115,22,0.4)]">Ya, Hapus</button>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL PREVIEW GAMBAR (Dioptimalkan untuk Mobile) -->
-    <div id="previewModal" class="fixed inset-0 bg-[#020617]/90 backdrop-blur-sm z-[110] flex items-center justify-center hidden opacity-0 transition-opacity duration-300 p-4">
-        <div class="bg-[#0f172a] rounded-2xl shadow-2xl w-full max-w-3xl transform scale-95 transition-all duration-300 border border-blue-500/40 flex flex-col h-[85vh] sm:h-[80vh]" id="previewModalContent">
-            <!-- Header Modal -->
-            <div class="flex justify-between items-center p-4 sm:p-5 border-b border-blue-500/30">
-                <h3 class="text-lg sm:text-xl font-bold text-white flex items-center">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    Bukti Transfer
-                </h3>
-                <div class="flex items-center space-x-2">
-                    <!-- Tombol Buka Tab Baru -->
-                    <a id="externalPreviewLink" href="#" target="_blank" class="text-xs sm:text-sm bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-lg flex items-center transition-colors">
-                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                        Buka Penuh
-                    </a>
-                    <button onclick="closePreviewModal()" class="text-blue-400 hover:text-white bg-blue-900/30 hover:bg-red-500/50 p-2 rounded-lg transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
-                </div>
-            </div>
-            <!-- Iframe Container -->
-            <div class="flex-grow bg-[#07102a] relative overflow-hidden rounded-b-2xl">
-                <div id="previewLoading" class="absolute inset-0 flex flex-col items-center justify-center text-blue-400 p-4 text-center">
-                    <svg class="animate-spin h-10 w-10 mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                    <span class="text-sm">Memuat pratinjau gambar...<br><span class="text-xs text-blue-500/70 mt-2 block">Jika gambar tidak muncul (blank putih), klik tombol "Buka Penuh" di atas.</span></span>
-                </div>
-                <iframe id="previewIframe" src="" class="w-full h-full border-0 relative z-10 hidden" onload="document.getElementById('previewLoading').classList.add('hidden'); this.classList.remove('hidden');"></iframe>
             </div>
         </div>
     </div>
@@ -226,8 +174,8 @@
     </div>
 
     <script>
-        // MASUKKAN URL GOOGLE SCRIPT KHUSUS DASHBOARD ANDA DISINI
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxESInamFy3KB6CZj58Ogk0qnxmicBnOAkG4kQAzx5_Su3oEwdT7-HhRkoPr1-OUEdj/exec'; 
+        // MASUKKAN URL GOOGLE SCRIPT ANDA DI SINI
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzW3u-vwVjNvxkf7dE288AX4Apxd_sefKjI2pTLzVlqqfrPE1BiRj7N9Wtozitc111v/exec'; 
         
         let globalData = [];
         
@@ -237,7 +185,6 @@
             minimumFractionDigits: 0
         });
 
-        // TAMPILAN UANG (Mencegah error kalau dari Sheet sudah ada tulisan Rp)
         function formatRupiah(val) {
             if (!val) return '-';
             if (typeof val === 'string' && val.toLowerCase().includes('rp')) return val; 
@@ -255,66 +202,41 @@
 
         async function fetchData() {
             const tableBody = document.getElementById('tableBody');
-            tableBody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-blue-400/50"><svg class="animate-spin h-8 w-8 mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Memuat data...</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-blue-400/50"><svg class="animate-spin h-8 w-8 mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Memuat data...</td></tr>`;
             
             try {
-                const response = await fetch(scriptURL);
+                const response = await fetch(scriptURL + "?t=" + new Date().getTime());
                 const textData = await response.text();
                 let result;
                 try {
                     result = JSON.parse(textData);
-                } catch (parseError) {
-                    console.error("Respons dari server bukan JSON:", textData.substring(0, 100));
+                } catch (e) {
                     throw new Error("Gagal membaca database. Pastikan Google Script di-deploy dengan akses 'Siapa saja'.");
                 }
                 
                 if(result.status === 'success') {
-                    // Mencegah error jika result.data undefined/null
                     globalData = Array.isArray(result.data) ? result.data : [];
-                    filterTable(); // Panggil fungsi filter agar otomatis me-render
+                    renderTable(globalData);
                     updateStats(globalData);
                 } else {
                     throw new Error(result.message);
                 }
             } catch (error) {
-                console.error("Fetch error:", error);
                 tableBody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-red-400">Gagal mengambil data: ${error.message}</td></tr>`;
                 showToast("Error", error.message, "error");
             }
         }
 
         function updateStats(data) {
-            const safeData = Array.isArray(data) ? data : [];
-            document.getElementById('statTotal').textContent = safeData.length;
-            const pending = safeData.filter(item => item['STATUS'] === 'Menunggu Konfirmasi').length;
-            const success = safeData.filter(item => item['STATUS'] === 'Disetujui').length;
-            
-            document.getElementById('statPending').textContent = pending;
-            document.getElementById('statSuccess').textContent = success;
-        }
-
-        // FUNGSI BARU: Untuk filter berdasarkan dropdown & input teks
-        function filterTable() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filterStatus = document.getElementById('filterStatus').value;
-            
-            let filteredData = globalData;
-            
-            // Filter berdasarkan status
-            if (filterStatus !== 'Semua') {
-                filteredData = filteredData.filter(row => row['STATUS'] === filterStatus);
-            }
-            
-            // Filter berdasarkan input teks (Nama / NIM)
-            if (searchTerm) {
-                filteredData = filteredData.filter(row => {
-                    const nama = (row['Nama'] || '').toLowerCase();
-                    const nim = (row['NIM'] || '').toString().toLowerCase();
-                    return nama.includes(searchTerm) || nim.includes(searchTerm);
-                });
-            }
-            
-            renderTable(filteredData);
+            document.getElementById('statTotal').textContent = data.length;
+            let pendingCount = 0, successCount = 0;
+            data.forEach(item => {
+                const status = (item.status || '').toString().toLowerCase();
+                if (status.includes('menunggu')) pendingCount++;
+                else if (status.includes('disetujui') || status.includes('acc')) successCount++;
+            });
+            document.getElementById('statPending').textContent = pendingCount;
+            document.getElementById('statSuccess').textContent = successCount;
         }
 
         function renderTable(data) {
@@ -322,57 +244,65 @@
             tableBody.innerHTML = '';
             
             if (data.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-blue-400/50">Belum ada transaksi.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-blue-400/50">Belum ada transaksi di RINCIAN maupun RIWAYAT.</td></tr>`;
                 return;
             }
 
             const reversedData = [...data].reverse();
 
             reversedData.forEach((row, index) => {
-                const trxId = row['ID']; // PERBAIKAN: Sebelumnya tertulis 'ID Transaksi'
-                const status = row['STATUS'];
-                const nama = row['Nama'];
-                const nim = row['NIM'];
+                // Menangkap data dari standarisasi backend
+                const trxId = row.id || '-'; 
+                const nama = row.nama || '-';
+                const nim = row.nim || '-';
+                const nominal = row.nominal || '-'; 
+                const metode = row.metode || '-'; 
+                const waktu = row.waktu || '-';
+                const bukti = row.bukti || ''; 
+                
+                const rawStatus = (row.status || '').toString().trim().toLowerCase();
                 
                 let statusBadge = '';
-                if(status === 'Disetujui') statusBadge = `<span class="bg-green-500/20 text-green-400 border border-green-500/30 px-2.5 py-1 rounded-md text-xs font-bold">Disetujui</span>`;
-                else if(status === 'Ditolak') statusBadge = `<span class="bg-orange-500/20 text-orange-400 border border-orange-500/30 px-2.5 py-1 rounded-md text-xs font-bold">Ditolak</span>`;
-                else statusBadge = `<span class="bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 px-2.5 py-1 rounded-md text-xs font-bold">Menunggu</span>`;
+                let isPending = false;
+                
+                if (rawStatus.includes('disetujui') || rawStatus.includes('acc')) {
+                    statusBadge = `<span class="bg-green-500/20 text-green-400 border border-green-500/30 px-2.5 py-1 rounded-md text-xs font-bold">Disetujui</span>`;
+                } else if (rawStatus.includes('tolak')) {
+                    statusBadge = `<span class="bg-orange-500/20 text-orange-400 border border-orange-500/30 px-2.5 py-1 rounded-md text-xs font-bold">Ditolak</span>`;
+                } else {
+                    statusBadge = `<span class="bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 px-2.5 py-1 rounded-md text-xs font-bold">Menunggu</span>`;
+                    isPending = true;
+                }
 
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-blue-900/20 transition-colors group';
                 tr.innerHTML = `
-                    <!-- KOLOM CENTANG BARU -->
                     <td class="p-4 text-center">
-                        <input type="checkbox" class="row-checkbox w-4 h-4 accent-blue-500 cursor-pointer" value="${nim}">
+                        <input type="checkbox" class="row-checkbox w-4 h-4 accent-blue-500 cursor-pointer" value="${trxId}">
                     </td>
-                    <td class="p-4 text-blue-200 text-xs">${formatDate(row['Timestamp Submit'] || row['Tanggal'])}</td>
+                    <td class="p-4 text-blue-200 text-xs">${formatDate(waktu)}</td>
                     <td class="p-4">
                         <div class="font-mono text-xs text-blue-300">${trxId}</div>
                         <div class="font-bold mt-1 text-white">${nim}</div>
                     </td>
                     <td class="p-4 font-semibold">${nama}</td>
                     <td class="p-4">
-                        <div class="font-bold text-blue-400">${formatRupiah(row['NOMINAL'])}</div>
-                        <div class="text-xs text-blue-200 mt-1">${row['VIA BAYAR']}</div>
-                    </td>
-                    <td class="p-4 text-center">
-                        <button onclick="previewImage('${row['BUKTI TF']}')" class="inline-flex items-center justify-center p-2 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/50 rounded-lg text-blue-300 transition-colors tooltip">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                        </button>
+                        <div class="font-bold text-blue-400">${formatRupiah(nominal)}</div>
+                        <div class="text-xs text-blue-200 mt-1">${metode}</div>
+                        ${bukti ? `<a href="${bukti}" target="_blank" class="inline-flex items-center mt-2 text-[10px] bg-blue-600/30 hover:bg-blue-600 text-blue-200 px-2 py-1 rounded transition-colors border border-blue-500/50"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>Lihat Bukti</a>` : '<span class="block mt-2 text-[10px] text-blue-400/50 italic">Tidak ada bukti</span>'}
                     </td>
                     <td class="p-4 text-center">${statusBadge}</td>
                     <td class="p-4 text-center">
-                        ${status === 'Menunggu Konfirmasi' || status === 'Menunggu' ? `
-                            <div class="flex items-center justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="changeStatus('${trxId}', '${nama}', '${nim}', 'Disetujui')" class="p-1.5 bg-green-600/20 hover:bg-green-600 border border-green-500/50 rounded-lg text-green-400 hover:text-white transition-colors" title="Setujui (ACC)">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                        ${isPending ? `
+                            <div class="flex items-center justify-center space-x-2">
+                                <button onclick="changeStatus('${trxId}', '${nama}', '${nim}', 'Disetujui')" class="p-2 bg-green-600/20 hover:bg-green-600 border border-green-500/50 rounded-lg text-green-400 hover:text-white transition-colors shadow-sm" title="Setujui (ACC)">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
                                 </button>
-                                <button onclick="changeStatus('${trxId}', '${nama}', '${nim}', 'Ditolak')" class="p-1.5 bg-orange-600/20 hover:bg-orange-600 border border-orange-500/50 rounded-lg text-orange-400 hover:text-white transition-colors" title="Tolak">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                <button onclick="changeStatus('${trxId}', '${nama}', '${nim}', 'Ditolak')" class="p-2 bg-orange-600/20 hover:bg-orange-600 border border-orange-500/50 rounded-lg text-orange-400 hover:text-white transition-colors shadow-sm" title="Tolak">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                                 </button>
                             </div>
-                        ` : '<span class="text-xs text-blue-400/50 italic">Selesai</span>'}
+                        ` : '<span class="text-xs text-blue-400/50 font-medium italic">Selesai</span>'}
                     </td>
                 `;
                 tableBody.appendChild(tr);
@@ -393,6 +323,10 @@
             try {
                 const response = await fetch(scriptURL, {
                     method: 'POST',
+                    redirect: 'follow',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    },
                     body: JSON.stringify(payload)
                 });
                 const result = await response.json();
@@ -405,13 +339,10 @@
                 }
             } catch (error) {
                 showToast("Error", "Gagal mengubah status: " + error.message, "error");
+                console.error("Detail error:", error);
             }
         }
 
-        const deleteModal = document.getElementById('deleteModal');
-        const deleteModalContent = document.getElementById('deleteModalContent');
-
-        // SCRIPT LOGIKA UNTUK PEMINDAHAN DATA
         function toggleSelectAll() {
             const selectAll = document.getElementById('selectAll');
             const checkboxes = document.querySelectorAll('.row-checkbox');
@@ -450,10 +381,10 @@
 
         async function executeMoveData() {
             const checkboxes = document.querySelectorAll('.row-checkbox:checked');
-            const selectedNims = Array.from(checkboxes).map(cb => cb.value);
+            const selectedIds = Array.from(checkboxes).map(cb => cb.value);
             const sheetSuffix = document.getElementById('sheetSuffix').value;
             
-            if (selectedNims.length === 0 || !sheetSuffix) return;
+            if (selectedIds.length === 0 || !sheetSuffix) return;
 
             const btn = document.getElementById('btnConfirmMove');
             const originalText = btn.innerHTML;
@@ -463,19 +394,15 @@
             try {
                 const response = await fetch(scriptURL, {
                     method: 'POST',
-                    body: JSON.stringify({ 
-                        action: 'moveData',
-                        nims: selectedNims,
-                        suffix: sheetSuffix
-                    })
+                    body: JSON.stringify({ action: 'moveData', ids: selectedIds, suffix: sheetSuffix })
                 });
                 const result = await response.json();
                 
                 if(result.status === 'success') {
-                    showToast("Berhasil", `${selectedNims.length} data berhasil dipindah ke arsip.`, "success");
+                    showToast("Berhasil", `${selectedIds.length} data dipindah.`, "success");
                     document.getElementById('selectAll').checked = false;
                     closeMoveModal();
-                    fetchData(); // Muat ulang tabel
+                    fetchData(); 
                 } else {
                     throw new Error(result.message);
                 }
@@ -487,55 +414,9 @@
             }
         }
 
-        // Fungsi Membuka Preview Modal Gambar
-        function previewImage(driveUrl) {
-            if (!driveUrl || driveUrl === '-' || driveUrl === 'undefined') {
-                showToast("Tidak ada file", "Bukti transfer tidak tersedia untuk transaksi ini.", "error");
-                return;
-            }
-            
-            let previewUrl = driveUrl;
-            if (driveUrl.includes('/view')) {
-                previewUrl = driveUrl.replace(/\/view.*/, '/preview');
-            }
-            
-            const iframe = document.getElementById('previewIframe');
-            const loading = document.getElementById('previewLoading');
-            const externalLink = document.getElementById('externalPreviewLink');
-            
-            // Setel link pada tombol buka penuh
-            externalLink.href = driveUrl; 
-            
-            iframe.classList.add('hidden');
-            loading.classList.remove('hidden');
-            iframe.src = previewUrl;
-            
-            const modal = document.getElementById('previewModal');
-            const modalContent = document.getElementById('previewModalContent');
-            
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modalContent.classList.remove('scale-95');
-                modalContent.classList.add('scale-100');
-            }, 10);
-        }
-
-        function closePreviewModal() {
-            const modal = document.getElementById('previewModal');
-            const modalContent = document.getElementById('previewModalContent');
-            const iframe = document.getElementById('previewIframe');
-            
-            modal.classList.add('opacity-0');
-            modalContent.classList.remove('scale-100');
-            modalContent.classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                iframe.src = ''; 
-            }, 300);
-        }
-
         function openDeleteModal() {
+            const deleteModal = document.getElementById('deleteModal');
+            const deleteModalContent = document.getElementById('deleteModalContent');
             deleteModal.classList.remove('hidden');
             setTimeout(() => {
                 deleteModal.classList.remove('opacity-0');
@@ -545,12 +426,12 @@
         }
 
         function closeDeleteModal() {
+            const deleteModal = document.getElementById('deleteModal');
+            const deleteModalContent = document.getElementById('deleteModalContent');
             deleteModal.classList.add('opacity-0');
             deleteModalContent.classList.remove('scale-100');
             deleteModalContent.classList.add('scale-95');
-            setTimeout(() => {
-                deleteModal.classList.add('hidden');
-            }, 300);
+            setTimeout(() => deleteModal.classList.add('hidden'), 300);
         }
 
         async function executeDeleteAll() {
@@ -560,21 +441,18 @@
             btn.disabled = true;
 
             try {
-                const response = await fetch(scriptURL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'deleteAll' })
-                });
+                const response = await fetch(scriptURL, { method: 'POST', body: JSON.stringify({ action: 'deleteAll' }) });
                 const result = await response.json();
                 
                 if(result.status === 'success') {
-                    showToast("Berhasil", "Semua data transaksi berhasil dihapus dari database.", "success");
+                    showToast("Berhasil", "Semua data dihapus.", "success");
                     closeDeleteModal();
                     fetchData(); 
                 } else {
                     throw new Error(result.message);
                 }
             } catch (error) {
-                showToast("Error", "Gagal menghapus data: " + error.message, "error");
+                showToast("Error", error.message, "error");
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
@@ -606,17 +484,38 @@
                 iconEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>`;
             }
 
-            // Tampilkan Toast (hilangkan class transparan & posisikan di layar)
             toast.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
             toast.classList.add('translate-x-0', 'opacity-100');
             
             clearTimeout(toastTimeout);
             toastTimeout = setTimeout(() => {
-                // Sembunyikan Toast kembali
                 toast.classList.remove('translate-x-0', 'opacity-100');
                 toast.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
             }, 4000); 
         }
+
+        function toggleMenu() {
+            const menu = document.getElementById('dropdownMenu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                setTimeout(() => {
+                    menu.classList.remove('opacity-0', 'scale-95');
+                    menu.classList.add('opacity-100', 'scale-100');
+                }, 10);
+            } else {
+                menu.classList.remove('opacity-100', 'scale-100');
+                menu.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => menu.classList.add('hidden'), 200);
+            }
+        }
+
+        window.addEventListener('click', function(e) {
+            const menu = document.getElementById('dropdownMenu');
+            const button = menu.previousElementSibling;
+            if (!menu.contains(e.target) && !button.contains(e.target) && !menu.classList.contains('hidden')) {
+                toggleMenu();
+            }
+        });
 
         window.onload = fetchData;
     </script>
