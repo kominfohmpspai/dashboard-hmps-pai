@@ -76,11 +76,11 @@
                 <h3 class="text-3xl font-bold text-white" id="statTotalPeserta">-</h3>
             </div>
             <div class="glass-panel rounded-2xl p-6 border-t-4 border-t-emerald-500">
-                <p class="text-sm text-emerald-300 font-medium mb-1">Sudah Lunas (ACC)</p>
+                <p class="text-sm text-emerald-300 font-medium mb-1">Sudah Lunas</p>
                 <h3 class="text-3xl font-bold text-white" id="statLunas">-</h3>
             </div>
             <div class="glass-panel rounded-2xl p-6 border-t-4 border-t-orange-500">
-                <p class="text-sm text-orange-300 font-medium mb-1">Belum Lunas / Menunggu</p>
+                <p class="text-sm text-orange-300 font-medium mb-1">Menunggu</p>
                 <h3 class="text-3xl font-bold text-white" id="statBelumLunas">-</h3>
             </div>
             <div class="glass-panel rounded-2xl p-6 border-t-4 border-t-purple-500">
@@ -91,12 +91,19 @@
 
         <!-- Tabel Rincian Kosong (Siap Diisi) -->
         <div class="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col relative overflow-hidden">
-            <div class="flex justify-between items-center mb-6 border-b border-blue-500/30 pb-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-blue-500/30 pb-4 gap-4">
                 <h3 class="text-xl font-bold text-white">Tabel Rincian Keseluruhan</h3>
-                <button onclick="fetchDataRincian()" class="bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/50 px-3 py-1.5 rounded-lg text-sm transition-colors flex items-center">
-                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    Refresh
-                </button>
+                <div class="flex items-center space-x-2 w-full sm:w-auto">
+                    <!-- FILTER PERIODE SHEET -->
+                    <select id="filterPeriode" onchange="filterRincian()" class="w-full sm:w-auto bg-[#07102a] text-blue-200 border border-blue-500/50 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-indigo-400 transition-colors appearance-none cursor-pointer">
+                        <option value="Semua">Semua Periode</option>
+                    </select>
+                    
+                    <button onclick="fetchDataRincian()" class="bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/50 px-3 py-1.5 rounded-lg text-sm transition-colors flex items-center whitespace-nowrap">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        Refresh
+                    </button>
+                </div>
             </div>
             
             <div class="overflow-x-auto custom-scrollbar border border-blue-500/20 rounded-xl bg-[#07102a]/50">
@@ -167,8 +174,10 @@
     </div>
 
     <script>
-        // MASUKKAN URL GOOGLE SCRIPT KHUSUS "RINCIAN" DISINI
-        const scriptURLRincian = 'https://script.google.com/macros/s/AKfycbyPYT2HTSFmrGgqdFpmwAVce9Zjbn1XnkZTCzJnYSd2BH_5hcELg40ejZdBSAwPw8_P/exec'; 
+        // MASUKKAN URL GOOGLE SCRIPT KHUSUS "RINCIAN" YANG BARU DISINI
+        const scriptURLRincian = 'https://script.google.com/macros/s/AKfycbzI7d4kdqj1aTqoPILVKdwy13x8CX4Dath5L7nv3bS0QpGaheomVrXJiwwYhTagwZGY/exec'; 
+
+        let globalRincianData = [];
 
         const formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
 
@@ -196,23 +205,63 @@
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    const data = Array.isArray(result.data) ? result.data : [];
-                    renderRincianData(data);
+                    globalRincianData = Array.isArray(result.data) ? result.data : [];
                     
-                    // Update Cards
-                    document.getElementById('statTotalPeserta').textContent = data.length;
-                    document.getElementById('statLunas').textContent = data.filter(d => d.Status === 'Disetujui').length;
-                    document.getElementById('statBelumLunas').textContent = data.filter(d => d.Status !== 'Disetujui').length;
+                    populatePeriodeFilter(); // Isi Dropdown Periode
+                    filterRincian(); // Tampilkan data dan hitung stats
                     
-                    // Total Biaya dari Kolom I
-                    let totalDana = result.totalBiaya || 'Rp 0';
-                    document.getElementById('statTotalDana').textContent = formatRupiah(totalDana);
                 } else {
                     throw new Error(result.message);
                 }
             } catch (error) {
                 tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-red-400">Gagal memuat data: ${error.message}.<br><span class="text-xs text-red-500/70">Pastikan URL Apps Script sudah benar.</span></td></tr>`;
             }
+        }
+
+        function populatePeriodeFilter() {
+            const filter = document.getElementById('filterPeriode');
+            const currentSelection = filter.value; // Simpan pilihan saat ini
+            
+            // Mengambil nama-nama sheet yang unik dari data
+            const periods = [...new Set(globalRincianData.map(item => item.Periode))];
+            
+            filter.innerHTML = '<option value="Semua">Semua Periode</option>';
+            periods.forEach(p => {
+                filter.innerHTML += `<option value="${p}">${p}</option>`;
+            });
+
+            // Kembalikan ke pilihan sebelumnya jika masih ada di daftar
+            if (periods.includes(currentSelection)) {
+                filter.value = currentSelection;
+            }
+        }
+
+        function filterRincian() {
+            const period = document.getElementById('filterPeriode').value;
+            let filteredData = globalRincianData;
+            
+            if (period !== "Semua") {
+                filteredData = filteredData.filter(d => d.Periode === period);
+            }
+            
+            renderRincianData(filteredData);
+            updateStatsDynamic(filteredData);
+        }
+
+        function updateStatsDynamic(data) {
+            document.getElementById('statTotalPeserta').textContent = data.length;
+            document.getElementById('statLunas').textContent = data.filter(d => d.Status === 'Disetujui').length;
+            document.getElementById('statBelumLunas').textContent = data.filter(d => d.Status !== 'Disetujui').length;
+            
+            // Hitung Total Dana secara dinamis dari tabel yang terfilter
+            let totalDana = 0;
+            data.forEach(d => {
+                if (d.Status === 'Disetujui') {
+                    const num = parseInt(String(d.Nominal).replace(/[^0-9]/g, ''));
+                    if (!isNaN(num)) totalDana += num;
+                }
+            });
+            document.getElementById('statTotalDana').textContent = formatRupiah(totalDana);
         }
 
         function renderRincianData(data) {
