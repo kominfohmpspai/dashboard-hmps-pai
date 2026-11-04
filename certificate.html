@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Certificate - MAKRAB PAI</title>
+    <!-- Menambahkan Icon Tab Browser agar selaras dengan web utama -->
+    <link rel="icon" type="image/png" href="logo HMPS.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f172a;
+            /* Pastikan gambar background ini valid, atau akan fallback ke gradasi biru tua */
+            background-image: linear-gradient(rgba(10, 25, 65, 0.9), rgba(15, 35, 85, 0.9)), url('BG HMPS.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f8fafc;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.5); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.8); }
+
+        .glass-panel {
+            background: rgba(15, 30, 75, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(147, 197, 253, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Hilangkan panah spinner pada input number jika dibutuhkan */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 bg-[#0a1536]/90 backdrop-blur-md border-b border-blue-400/20 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <!-- Menggunakan Logo Resmi HMPS -->
+                <img src="logo HMPS.png" alt="Logo HMPS" class="h-10 w-10 object-contain drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">
+                <h1 class="text-xl font-bold tracking-tight text-white">DASHBOARD HMPS PAI</h1>
+            </div>
+            
+            <div class="relative">
+                <button onclick="toggleMenu()" class="p-2 text-blue-200 hover:text-white bg-blue-900/40 hover:bg-blue-800/60 rounded-lg border border-blue-500/30 transition-colors focus:outline-none focus:ring-1 focus:ring-blue-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                
+                <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-[#0f172a] border border-blue-500/40 rounded-xl shadow-2xl py-2 hidden z-50 transform origin-top-right transition-all duration-200 opacity-0 scale-95">
+                    <a href="index.html" class="block px-4 py-2 text-sm text-blue-200 hover:bg-blue-600/30 hover:text-white transition-colors">Dashboard Utama</a>
+                    <a href="rincian.html" class="block px-4 py-2 text-sm text-blue-200 hover:bg-blue-600/30 hover:text-white transition-colors">Rincian Dana</a>
+                    <a href="certificate.html" class="block px-4 py-2 text-sm text-blue-300 font-bold bg-blue-900/50 hover:bg-blue-600/30 hover:text-white transition-colors">Certificate</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-blue-200 hover:bg-blue-600/30 hover:text-white transition-colors">Susunan Acara</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full relative z-10 flex flex-col gap-8">
+        
+        <div class="mb-2">
+            <h2 class="text-3xl font-bold text-white flex items-center">
+                <svg class="w-8 h-8 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Kelola E-Certificate
+            </h2>
+            <p class="text-blue-200 mt-2 text-sm">Unggah, cari, dan kelola sertifikat asli (PNG) peserta tanpa kompresi.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <!-- PANEL KIRI: FORM UPLOAD -->
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 lg:col-span-1 border-t-4 border-t-indigo-500">
+                <h3 class="text-xl font-bold text-white mb-4">Unggah Baru</h3>
+                <form id="uploadForm" onsubmit="handleUpload(event)" class="flex flex-col gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-blue-200 mb-1">Nama Lengkap Peserta</label>
+                        <input type="text" id="certName" required placeholder="Contoh: Budi Santoso" class="w-full bg-[#07102a] text-white border border-blue-500/50 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-colors">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-blue-200 mb-1">NIM</label>
+                            <input type="text" id="certNIM" required placeholder="Contoh: 21010..." class="w-full bg-[#07102a] text-white border border-blue-500/50 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-blue-200 mb-1">No. Sertifikat</label>
+                            <input type="text" id="certNo" required placeholder="001/HMPS/..." class="w-full bg-[#07102a] text-white border border-blue-500/50 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-colors">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-blue-200 mb-1">File Sertifikat (Kualitas Asli)</label>
+                        <div class="relative group">
+                            <input type="file" id="certFile" accept=".png" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="updateFileName()">
+                            <div id="fileUI" class="w-full bg-[#07102a] border-2 border-dashed border-blue-500/50 group-hover:border-indigo-400 rounded-lg px-4 py-6 text-center transition-colors flex flex-col items-center justify-center">
+                                <svg class="w-8 h-8 text-blue-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                                <span id="fileNameDisplay" class="text-sm text-blue-300 font-medium">Pilih file PNG atau seret ke sini</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-blue-400/70 mt-2">*Sertifikat akan diunggah tanpa kompresi, kualitas 100% terjaga.</p>
+                    </div>
+
+                    <button type="submit" id="btnUpload" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition-all shadow-[0_0_15px_rgba(79,70,229,0.4)] flex items-center justify-center mt-2">
+                        <span>Unggah Sertifikat</span>
+                        <svg id="uploadSpinner" class="animate-spin h-5 w-5 ml-2 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    </button>
+                </form>
+            </div>
+
+            <!-- PANEL KANAN: TABEL PENCARIAN -->
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 lg:col-span-2 flex flex-col h-full border-t-4 border-t-emerald-500">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                    <h3 class="text-xl font-bold text-white">Database Sertifikat</h3>
+                    
+                    <div class="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
+                        <!-- Tombol Batch Upload (Muncul jika ada file yg dipilih) -->
+                        <button onclick="uploadAllSelected()" id="btnBatchUpload" class="hidden w-full sm:w-auto bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/50 px-4 py-2 rounded-lg text-sm transition-colors flex items-center justify-center whitespace-nowrap shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                            Unggah Semua (<span id="batchCount">0</span>)
+                        </button>
+                        
+                        <!-- Tombol Ambil Data -->
+                        <button onclick="syncData()" id="btnSync" class="w-full sm:w-auto bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/50 px-4 py-2 rounded-lg text-sm transition-colors flex items-center justify-center whitespace-nowrap shadow-[0_0_10px_rgba(79,70,229,0.2)]">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                            Ambil Data
+                        </button>
+                        
+                        <!-- Pencarian -->
+                        <div class="relative w-full sm:w-64">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-4 w-4 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </div>
+                            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari nama spesifik..." class="w-full bg-[#07102a] text-white border border-blue-500/50 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-colors">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar border border-blue-500/20 rounded-xl bg-[#07102a]/50 flex-grow">
+                    <table class="w-full text-left border-collapse whitespace-nowrap">
+                        <thead>
+                            <tr class="bg-emerald-900/30 text-emerald-300 text-xs uppercase tracking-wider border-b border-emerald-500/30">
+                                <th class="p-4 font-semibold w-12 text-center">No</th>
+                                <th class="p-4 font-semibold">Nama & NIM</th>
+                                <th class="p-4 font-semibold">No. Sertifikat</th>
+                                <th class="p-4 font-semibold text-center w-32">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="certTableBody" class="text-sm divide-y divide-blue-500/10 text-blue-50">
+                            <!-- Data dimuat via JS -->
+                            <tr>
+                                <td colspan="4" class="p-8 text-center text-emerald-400/50">
+                                    <svg class="animate-spin h-8 w-8 mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                    Memuat database sertifikat...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL CUSTOM KONFIRMASI HAPUS (Pengganti confirm()) -->
+    <div id="confirmModal" class="fixed inset-0 bg-[#020617]/90 backdrop-blur-sm z-[150] flex items-center justify-center hidden opacity-0 transition-opacity duration-300 p-4">
+        <div id="confirmModalContent" class="bg-[#0f172a] rounded-2xl shadow-[0_0_40px_rgba(239,68,68,0.2)] w-full max-w-sm transform scale-95 transition-all duration-300 border border-red-500/40 p-6 text-center">
+            <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/50 text-red-500">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Hapus Sertifikat?</h3>
+            <p class="text-blue-200 text-sm mb-6">Tindakan ini akan menghapus sertifikat <strong id="deleteTargetName" class="text-red-400"></strong> dari database dan Google Drive secara permanen.</p>
+            <div class="flex space-x-3">
+                <button onclick="closeConfirmModal()" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-xl transition-colors font-medium text-sm">Batal</button>
+                <button id="btnConfirmDelete" class="flex-1 bg-red-600 hover:bg-red-500 text-white py-2 rounded-xl transition-colors font-medium text-sm flex items-center justify-center shadow-[0_0_10px_rgba(220,38,38,0.5)]">
+                    <span id="deleteBtnText">Hapus</span>
+                    <svg id="deleteSpinner" class="animate-spin h-4 w-4 ml-2 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toastMessage" class="fixed top-5 right-5 z-[200] transform translate-x-full opacity-0 pointer-events-none transition-all duration-300">
+        <div id="toastContainer" class="flex items-start bg-[#0a1536] border-l-4 rounded-lg p-4 max-w-sm shadow-lg">
+            <svg id="toastIcon" class="w-6 h-6 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
+            <div>
+                <h4 id="toastTitle" class="text-white font-bold text-sm">Notifikasi</h4>
+                <p id="toastDesc" class="text-blue-200 text-xs mt-1">Pesan</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PREVIEW GAMBAR -->
+    <div id="previewModal" class="fixed inset-0 bg-[#020617]/90 backdrop-blur-sm z-[250] flex items-center justify-center hidden opacity-0 transition-opacity duration-300 p-4">
+        <div class="bg-[#0f172a] rounded-2xl shadow-2xl w-full max-w-3xl transform scale-95 transition-all duration-300 border border-blue-500/40 flex flex-col h-[85vh] sm:h-[80vh]" id="previewModalContent">
+            <!-- Header Modal -->
+            <div class="flex justify-between items-center p-4 sm:p-5 border-b border-blue-500/30">
+                <h3 class="text-lg sm:text-xl font-bold text-white flex items-center">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Pratinjau Sertifikat
+                </h3>
+                <div class="flex items-center space-x-2">
+                    <a id="externalPreviewLink" href="#" target="_blank" class="text-xs sm:text-sm bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-lg flex items-center transition-colors">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        Buka Penuh
+                    </a>
+                    <button onclick="closePreviewModal()" class="text-blue-400 hover:text-white bg-blue-900/30 hover:bg-red-500/50 p-2 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Iframe Container -->
+            <div class="flex-grow bg-[#07102a] relative overflow-hidden rounded-b-2xl">
+                <div id="previewLoading" class="absolute inset-0 flex flex-col items-center justify-center text-blue-400 p-4 text-center">
+                    <svg class="animate-spin h-10 w-10 mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    <span class="text-sm">Memuat gambar sertifikat...</span>
+                </div>
+                <iframe id="previewIframe" src="" class="w-full h-full border-0 relative z-10 hidden" onload="document.getElementById('previewLoading').classList.add('hidden'); this.classList.remove('hidden');"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ====================================================================
+        // GANTI TEKS DI BAWAH INI DENGAN URL DEPLOYMENT BARU DARI APPS SCRIPT!
+        // ====================================================================
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzldBLIowt4M_zEYPzXbasVjWFRCSi4bt_jteB49vnHb72Gt-gT1MABtkWIlhvb9XDX/exec'; 
+
+        let globalCertificates = [];
+        let itemToDelete = null; 
+        let rowFiles = {}; // Menyimpan antrean file yang akan diunggah (per-baris)
+
+        // Sistem Peringatan Jika Lupa Memasukkan URL
+        window.addEventListener('DOMContentLoaded', () => {
+            if (SCRIPT_URL === 'TARUH_URL_WEB_APP_DISINI' || SCRIPT_URL === '') {
+                showToast("Sistem Belum Siap!", "Anda belum memasukkan SCRIPT_URL di dalam file certificate.html. Silakan edit kodenya terlebih dahulu.", "error");
+                document.getElementById('certTableBody').innerHTML = `<tr><td colspan="4" class="p-8 text-center text-red-500 font-bold bg-red-900/20">KONEKSI TERPUTUS:<br>SCRIPT_URL BELUM DIMASUKKAN DI HTML!</td></tr>`;
+                return;
+            }
+            fetchCertificates();
+        });
+
+        function updateFileName() {
+            const input = document.getElementById('certFile');
+            const display = document.getElementById('fileNameDisplay');
+            if (input.files.length > 0) {
+                const file = input.files[0];
+                if(file.type !== "image/png") {
+                    showToast("Format Salah", "Hanya file PNG yang diizinkan untuk menjaga kualitas alpha/asli.", "error");
+                    input.value = ""; // Reset
+                    display.textContent = "Pilih file PNG atau seret ke sini";
+                    display.classList.remove('text-indigo-400', 'font-bold');
+                    display.classList.add('text-blue-300');
+                    return;
+                }
+                display.textContent = file.name;
+                display.classList.add('text-indigo-400', 'font-bold');
+                display.classList.remove('text-blue-300');
+            } else {
+                display.textContent = "Pilih file PNG atau seret ke sini";
+                display.classList.remove('text-indigo-400', 'font-bold');
+                display.classList.add('text-blue-300');
+            }
+        }
+
+        // --- FUNGSI UPLOAD SERTIFIKAT ---
+        async function handleUpload(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('certName').value;
+            const nimInput = document.getElementById('certNIM').value;
+            const noInput = document.getElementById('certNo').value;
+            const fileInput = document.getElementById('certFile');
+            
+            if (fileInput.files.length === 0) return;
+
+            const file = fileInput.files[0];
+            const btn = document.getElementById('btnUpload');
+            const spinner = document.getElementById('uploadSpinner');
+
+            // UI Loading state
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            spinner.classList.remove('hidden');
+
+            try {
+                // Baca file menjadi Base64 string
+                const base64Data = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        // Ambil hanya string base64, buang prefix data:image/png;base64,
+                    const base64Str = reader.result.split(',')[1]; 
+                    resolve(base64Str);
+                };
+                reader.onerror = error => reject(new Error("Gagal membaca file gambar"));
+                reader.readAsDataURL(file);
+            });
+
+            // Payload
+                const payload = {
+                    action: 'upload',
+                    name: nameInput,
+                    nim: nimInput,
+                    noSertifikat: noInput,
+                    fileName: file.name,
+                    file: base64Data
+                };
+
+                // Kirim ke Google Apps Script (POST) dengan header text/plain untuk bypass preflight CORS
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8'
+                    },
+                    body: JSON.stringify(payload)
+                });
+            
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                const msg = result.data.message || "Sertifikat berhasil diunggah.";
+                showToast("Sukses", msg, "success");
+                document.getElementById('uploadForm').reset();
+                updateFileName(); // Reset file ui
+                fetchCertificates(); // Reload data
+            } else {
+                throw new Error(result.message || "Terjadi kesalahan pada server");
+            }
+
+        } catch (error) {
+            console.error("Upload Error:", error);
+            showToast("Gagal Mengunggah", error.message, "error");
+        } finally {
+            btn.disabled = false;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                spinner.classList.add('hidden');
+            }
+        }
+
+        // --- FUNGSI AMBIL DATA SERTIFIKAT ---
+        async function fetchCertificates() {
+            const tbody = document.getElementById('certTableBody');
+            tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-emerald-400/50"><svg class="animate-spin h-8 w-8 mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Memuat data terbaru...</td></tr>`;
+            
+            try {
+                // Tambahkan parameter unik agar browser tidak melalukan cache (bypass CORS issue pada data lama)
+                const response = await fetch(SCRIPT_URL + "?t=" + new Date().getTime());
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    globalCertificates = result.data || [];
+                    renderTable(globalCertificates);
+                } else {
+                    throw new Error(result.message || "Format data dari server salah.");
+                }
+            } catch (error) {
+                console.error("Fetch Error:", error);
+                tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-red-400">Gagal memuat data: ${error.message}<br><span class="text-xs text-red-500/70">Pastikan URL Apps Script sudah benar & Folder ID valid.</span></td></tr>`;
+            }
+        }
+
+        // --- RENDER & PENCARIAN SPESIFIK REALTIME ---
+        function filterTable() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (keyword === '') {
+                renderTable(globalCertificates);
+                return;
+            }
+
+            // Filter semakin spesifik keyword yang diinput
+            const filtered = globalCertificates.filter(item => 
+                item.Nama.toLowerCase().includes(keyword)
+            );
+            
+            renderTable(filtered);
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('certTableBody');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-emerald-400/50">Data tidak ditemukan.</td></tr>`;
+                return;
+            }
+
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-emerald-900/10 transition-colors';
+
+                // Escape quotes pada parameter
+                const safeName = row.Nama.replace(/'/g, "\\'");
+                const safeId = row.ID.replace(/'/g, "\\'");
+                
+                // Cek apakah sertifikat sudah diunggah
+                const isUploaded = row.URL && row.URL !== '-' && row.URL !== '';
+
+                // Aksi tombol bergantung apakah file sudah diunggah
+                let actionButtons = '';
+                if (isUploaded) {
+                    actionButtons = `
+                        <button onclick="previewImage('${row.URL}')" class="p-2 bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/50 rounded-lg text-emerald-300 transition-colors tooltip" title="Lihat PNG Asli">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                        </button>
+                        <button onclick="openConfirmModal('${safeId}', '${safeName}')" class="p-2 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 rounded-lg text-red-400 transition-colors tooltip" title="Hapus">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    `;
+                } else {
+                    actionButtons = `
+                        <div class="flex flex-col items-center gap-1.5 w-full">
+                            <input type="file" id="file_${row.NIM}" class="hidden" accept=".png" onchange="selectRowFile('${row.NIM}')">
+                            <div class="flex items-center gap-1.5 justify-center">
+                                <button onclick="document.getElementById('file_${row.NIM}').click()" class="text-[10px] sm:text-xs bg-blue-900/50 hover:bg-blue-800 text-blue-300 border border-blue-500/30 px-2 py-1 rounded transition-colors whitespace-nowrap">Pilih PNG</button>
+                                <button id="btn_upload_${row.NIM}" onclick="uploadRow('${row.NIM}', '${safeName}', '${row.NoSertifikat}')" class="text-[10px] sm:text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-2 py-1 rounded hidden transition-colors whitespace-nowrap shadow-[0_0_10px_rgba(79,70,229,0.4)]">Unggah</button>
+                            </div>
+                            <span id="name_file_${row.NIM}" class="text-[9px] sm:text-[10px] text-blue-400 truncate w-24 text-center">Belum ada file</span>
+                        </div>
+                    `;
+                }
+
+                tr.innerHTML = `
+                    <td class="p-4 text-center text-emerald-300 font-medium">${index + 1}</td>
+                    <td class="p-4">
+                        <div class="font-bold text-white">${row.Nama}</div>
+                        <div class="text-blue-300 text-xs font-mono mt-0.5">${row.NIM}</div>
+                    </td>
+                    <td class="p-4 text-emerald-200 text-xs font-mono">${row.NoSertifikat}</td>
+                    <td class="p-4 text-center" id="action_${row.NIM}">
+                        <div class="flex justify-center items-center space-x-2 h-full">
+                            ${actionButtons}
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- FUNGSI AMBIL DATA (SYNC) DARI RIWAYAT ---
+        async function syncData() {
+            const btn = document.getElementById('btnSync');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Menyalin...`;
+            
+            try {
+                const payload = { action: 'fetchData' };
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showToast("Selesai", result.data, "success");
+                    fetchCertificates(); // Muat ulang tabel
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                showToast("Gagal Menyalin", error.message, "error");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        }
+
+        // --- FUNGSI BANTUAN UNTUK UPLOAD PER-BARIS ---
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = error => reject(new Error("Gagal membaca file gambar"));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function selectRowFile(nim) {
+            const input = document.getElementById(`file_${nim}`);
+            const display = document.getElementById(`name_file_${nim}`);
+            const btnUpload = document.getElementById(`btn_upload_${nim}`);
+            
+            if(input.files.length > 0) {
+                const file = input.files[0];
+                if(file.type !== "image/png") {
+                    showToast("Format Salah", "Hanya file PNG yang diizinkan.", "error");
+                    input.value = "";
+                    return;
+                }
+                rowFiles[nim] = file;
+                display.textContent = file.name;
+                display.classList.add('text-emerald-400');
+                display.classList.remove('text-blue-400');
+                btnUpload.classList.remove('hidden');
+            } else {
+                delete rowFiles[nim];
+                display.textContent = "Belum ada file";
+                display.classList.remove('text-emerald-400');
+                display.classList.add('text-blue-400');
+                btnUpload.classList.add('hidden');
+            }
+            updateBatchUploadButton();
+        }
+
+        function updateBatchUploadButton() {
+            const count = Object.keys(rowFiles).length;
+            const btn = document.getElementById('btnBatchUpload');
+            const countSpan = document.getElementById('batchCount');
+            
+            if(count > 0) {
+                btn.classList.remove('hidden');
+                countSpan.textContent = count;
+            } else {
+                btn.classList.add('hidden');
+            }
+        }
+
+        // --- UPLOAD SATU BARIS ---
+        async function uploadRow(nim, name, noSert) {
+            const file = rowFiles[nim];
+            if(!file) return;
+
+            const btn = document.getElementById(`btn_upload_${nim}`);
+            const actionTd = document.getElementById(`action_${nim}`);
+            const actionContainer = actionTd ? actionTd.querySelector('.flex') : null;
+            
+            const originalActionHTML = actionContainer ? actionContainer.innerHTML : '';
+            
+            // Set Loading pada kolom aksi langsung
+            if (actionContainer) {
+                actionContainer.innerHTML = `<svg class="animate-spin h-6 w-6 text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+            } else if (btn) {
+                btn.innerHTML = `<svg class="animate-spin h-3 w-3 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+                btn.disabled = true;
+            }
+
+            try {
+                const base64Str = await fileToBase64(file);
+                const payload = {
+                    action: 'upload',
+                    name: name,
+                    nim: nim,
+                    noSertifikat: noSert,
+                    fileName: file.name,
+                    file: base64Str
+                };
+
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                
+                if(result.status === 'success') {
+                    showToast("Sukses", `Sertifikat untuk ${name} berhasil diunggah.`, "success");
+                    delete rowFiles[nim];
+                    updateBatchUploadButton();
+                    
+                    // MUNCULKAN TOMBOL VIEW/DELETE SECARA INSTAN TANPA REFRESH
+                    if (actionContainer && result.data && result.data.url) {
+                        const newUrl = result.data.url;
+                        const newId = result.data.id;
+                        const safeName = name.replace(/'/g, "\\'");
+                        const safeId = newId.replace(/'/g, "\\'");
+                        
+                        // Update cache global
+                        const cert = globalCertificates.find(c => String(c.NIM).trim() === String(nim).trim());
+                        if(cert) { cert.URL = newUrl; cert.ID = newId; }
+
+                        actionContainer.innerHTML = `
+                            <button onclick="previewImage('${newUrl}')" class="p-2 bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/50 rounded-lg text-emerald-300 transition-colors tooltip" title="Lihat PNG Asli">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </button>
+                            <button onclick="openConfirmModal('${safeId}', '${safeName}')" class="p-2 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 rounded-lg text-red-400 transition-colors tooltip" title="Hapus">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        `;
+                    }
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch(e) {
+                showToast("Gagal", e.message, "error");
+                if (actionContainer) actionContainer.innerHTML = originalActionHTML;
+                if (btn) { btn.innerHTML = 'Unggah'; btn.disabled = false; }
+            }
+        }
+
+        // --- UPLOAD SEMUA (BATCH) ---
+        async function uploadAllSelected() {
+            const nims = Object.keys(rowFiles);
+            if(nims.length === 0) return;
+            
+            const btn = document.getElementById('btnBatchUpload');
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+
+            let successCount = 0;
+            let total = nims.length;
+            
+            // Upload dilakukan secara bergantian agar tidak membebani server
+            for(let i = 0; i < total; i++) {
+                let nim = nims[i];
+                
+                // Update text UI untuk progres tombol atas
+                btn.innerHTML = `<svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Memproses ${i + 1}/${total}...`;
+
+                const cert = globalCertificates.find(c => String(c.NIM).trim() === String(nim).trim());
+                
+                if(cert) {
+                    // SET BARIS YANG SEDANG DIPROSES MENJADI LOADING SPINNER
+                    const actionTd = document.getElementById(`action_${nim}`);
+                    const actionContainer = actionTd ? actionTd.querySelector('.flex') : null;
+                    const originalActionHTML = actionContainer ? actionContainer.innerHTML : '';
+                    if (actionContainer) {
+                        actionContainer.innerHTML = `<svg class="animate-spin h-6 w-6 text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+                    }
+
+                    try {
+                        const file = rowFiles[nim];
+                        const base64Str = await fileToBase64(file);
+                        const payload = {
+                            action: 'upload',
+                            name: cert.Nama,
+                            nim: nim,
+                            noSertifikat: cert.NoSertifikat,
+                            fileName: file.name,
+                            file: base64Str
+                        };
+
+                        const response = await fetch(SCRIPT_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify(payload)
+                        });
+                        const result = await response.json();
+                        
+                        if(result.status === 'success') {
+                            delete rowFiles[nim];
+                            successCount++;
+
+                            // UBAH LOADING JADI TOMBOL VIEW & HAPUS SECARA INSTAN
+                            if (actionContainer && result.data && result.data.url) {
+                                const newUrl = result.data.url;
+                                const newId = result.data.id;
+                                const safeName = cert.Nama.replace(/'/g, "\\'");
+                                const safeId = newId.replace(/'/g, "\\'");
+                                
+                                cert.URL = newUrl;
+                                cert.ID = newId;
+
+                                actionContainer.innerHTML = `
+                                    <button onclick="previewImage('${newUrl}')" class="p-2 bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/50 rounded-lg text-emerald-300 transition-colors tooltip" title="Lihat PNG Asli">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                    </button>
+                                    <button onclick="openConfirmModal('${safeId}', '${safeName}')" class="p-2 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 rounded-lg text-red-400 transition-colors tooltip" title="Hapus">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    </button>
+                                `;
+                            }
+                        } else {
+                            if (actionContainer) actionContainer.innerHTML = originalActionHTML;
+                        }
+                    } catch(e) {
+                        console.error(`Upload ${cert.Nama} gagal:`, e);
+                        if (actionContainer) actionContainer.innerHTML = originalActionHTML;
+                    }
+                }
+            }
+            
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+            updateBatchUploadButton();
+            
+            if (successCount > 0) {
+                showToast("Batch Selesai", `${successCount} sertifikat berhasil diunggah ke Database.`, "success");
+                // Tidak perlu muat ulang (fetchCertificates) karena baris sudah berubah instan!
+            } else {
+                showToast("Gagal", "Tidak ada file yang berhasil diunggah.", "error");
+            }
+        }
+
+        // --- FUNGSI HAPUS (MODAL & REQUEST) ---
+        function openConfirmModal(fileId, name) {
+            itemToDelete = fileId;
+            document.getElementById('deleteTargetName').textContent = name;
+            const modal = document.getElementById('confirmModal');
+            const content = document.getElementById('confirmModalContent');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+
+            // Bind event listener ke tombol hapus (bersihkan listener lama)
+            const btn = document.getElementById('btnConfirmDelete');
+            btn.onclick = executeDelete;
+        }
+
+        function closeConfirmModal() {
+            itemToDelete = null;
+            const modal = document.getElementById('confirmModal');
+            const content = document.getElementById('confirmModalContent');
+            
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                // Reset loading state if any
+                document.getElementById('deleteSpinner').classList.add('hidden');
+                document.getElementById('deleteBtnText').textContent = "Hapus";
+                document.getElementById('btnConfirmDelete').disabled = false;
+            }, 300);
+        }
+
+        async function executeDelete() {
+            if (!itemToDelete) return;
+            
+            const btn = document.getElementById('btnConfirmDelete');
+            const spinner = document.getElementById('deleteSpinner');
+            const text = document.getElementById('deleteBtnText');
+
+            btn.disabled = true;
+            spinner.classList.remove('hidden');
+            text.textContent = "Menghapus...";
+
+            try {
+                const payload = { action: 'delete', fileId: itemToDelete };
+                
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showToast("Sukses Dihapus", result.data || "Sertifikat telah dihapus dari database dan drive.", "success");
+                    closeConfirmModal();
+                    
+                    // Hapus lokal dari array dan render ulang agar cepat
+                    globalCertificates = globalCertificates.filter(c => c.ID !== itemToDelete);
+                    filterTable(); 
+                    
+                } else {
+                    throw new Error(result.message || "Gagal menghapus dari server.");
+                }
+            } catch (error) {
+                showToast("Gagal Menghapus", error.message, "error");
+                closeConfirmModal();
+            }
+        }
+
+        // --- FUNGSI PREVIEW GAMBAR (TAMPIL DI WEB) ---
+        function previewImage(driveUrl) {
+            if (!driveUrl || driveUrl === '-' || driveUrl === 'undefined' || driveUrl === '') {
+                showToast("Tidak ada file", "Sertifikat tidak tersedia.", "error");
+                return;
+            }
+            
+            // Ubah link view jadi preview agar bisa di iframe
+            let previewUrl = driveUrl;
+            if (driveUrl.includes('/view')) {
+                previewUrl = driveUrl.replace(/\/view.*/, '/preview');
+            }
+            
+            const iframe = document.getElementById('previewIframe');
+            const loading = document.getElementById('previewLoading');
+            const externalLink = document.getElementById('externalPreviewLink');
+            
+            externalLink.href = driveUrl; 
+            
+            iframe.classList.add('hidden');
+            loading.classList.remove('hidden');
+            iframe.src = previewUrl;
+            
+            const modal = document.getElementById('previewModal');
+            const modalContent = document.getElementById('previewModalContent');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closePreviewModal() {
+            const modal = document.getElementById('previewModal');
+            const modalContent = document.getElementById('previewModalContent');
+            const iframe = document.getElementById('previewIframe');
+            
+            modal.classList.add('opacity-0');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                iframe.src = ''; 
+            }, 300);
+        }
+
+        // --- SISTEM TOAST / NOTIFIKASI ---
+        let toastTimeout;
+        function showToast(title, message, type) {
+            const toast = document.getElementById('toastMessage');
+            const toastContainer = document.getElementById('toastContainer');
+            const titleEl = document.getElementById('toastTitle');
+            const descEl = document.getElementById('toastDesc');
+            const iconEl = document.getElementById('toastIcon');
+
+            titleEl.textContent = title;
+            descEl.textContent = message;
+
+            if (type === 'error') {
+                toastContainer.className = "flex items-start bg-[#0a1536] border-l-4 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)] rounded-lg p-4 max-w-sm";
+                iconEl.className = "w-6 h-6 mr-3 text-red-400 flex-shrink-0";
+                iconEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>`;
+            } else {
+                toastContainer.className = "flex items-start bg-[#0a1536] border-l-4 border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)] rounded-lg p-4 max-w-sm";
+                iconEl.className = "w-6 h-6 mr-3 text-emerald-400 flex-shrink-0";
+                iconEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>`;
+            }
+
+            toast.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-x-0', 'opacity-100');
+            
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('translate-x-0', 'opacity-100');
+                toast.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
+            }, 4000); 
+        }
+
+        // --- MENU HAMBURGER ---
+        function toggleMenu() {
+            const menu = document.getElementById('dropdownMenu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                setTimeout(() => {
+                    menu.classList.remove('opacity-0', 'scale-95');
+                    menu.classList.add('opacity-100', 'scale-100');
+                }, 10);
+            } else {
+                menu.classList.remove('opacity-100', 'scale-100');
+                menu.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    menu.classList.add('hidden');
+                }, 200);
+            }
+        }
+
+        window.addEventListener('click', function(e) {
+            const menu = document.getElementById('dropdownMenu');
+            const button = menu.previousElementSibling;
+            if (!menu.contains(e.target) && !button.contains(e.target) && !menu.classList.contains('hidden')) {
+                toggleMenu();
+            }
+        });
+    </script>
+</body>
+</html>
